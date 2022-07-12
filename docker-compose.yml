@@ -28,7 +28,7 @@ services:
       - api
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.amnazom-admin.rule=Host(`amnazom.davegabe.it`)"
-      - "traefik.http.routers.amnazom-admin.entrypoints=websecure"
-      - "traefik.http.routers.amnazom-admin.tls.certResolver=le"
-      - "traefik.http.services.amnazom-admin.loadBalancer.server.port=80"
+      - "traefik.http.routers.amnazom-web-app.rule=Host(`amnazom.davegabe.it`)"
+      - "traefik.http.routers.amnazom-web-app.entrypoints=websecure"
+      - "traefik.http.routers.amnazom-web-app.tls.certResolver=le"
+      - "traefik.http.services.amnazom-web-app.loadBalancer.server.port=80"
