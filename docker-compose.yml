@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  api:
+    build: 
+      context: ../ecommerce-api
+      # target: production
+      dockerfile: ./Dockerfile
+    image: lassi/ecommerce-api
+    container_name: ecommerce-api
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 7000 -b '0.0.0.0'"
+    restart: unless-stopped
+    # env_file: .env
+    volumes:
+      - .:/myapp
+    ports:
+      - "127.0.0.1:7000:7000"
+
+  web-app:
+    build: 
+        context: ../ecommerce-web-app
+    image: lassi/ecommerce-web-app
+    container_name: ecommerce-web-app
+    environment:
+      - SERVER_API_URL=ecommerce-api
+    ports:
+      - "127.0.0.1:8080:80"
+    depends_on:
+      - api
