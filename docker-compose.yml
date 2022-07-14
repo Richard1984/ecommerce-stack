@@ -11,17 +11,23 @@ services:
     restart: unless-stopped
     # env_file: .env
     volumes:
-      - .:/myapp
+      - .:/myapp     
+      - type: bind
+        source: ./master.key
+        target: /usr/src/app/config/master.key
     ports:
       - "127.0.0.1:7000:7000"
 
   web-app:
     build: 
         context: ../ecommerce-web-app
+        args:
+          - STRIPE_PUB_KEY=$STRIPE_PUB_KEY
     image: lassi/ecommerce-web-app
     container_name: ecommerce-web-app
     environment:
       - SERVER_API_URL=ecommerce-api
+    env_file: .env
     ports:
       - "127.0.0.1:4000:80"
     depends_on:
