@@ -1,2 +1,4 @@
 master.key
 .env
+production.sqlite3
+credentials.yml.enc
