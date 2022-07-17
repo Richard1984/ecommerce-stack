@@ -13,9 +13,6 @@ services:
     restart: unless-stopped
     # env_file: .env
     volumes:
-      - type: volume
-        source: db-data
-        target: /usr/src/app/db/production.sqlite3
       - type: bind
         source: ./master.key
         target: /usr/src/app/config/master.key
