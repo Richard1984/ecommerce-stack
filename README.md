@@ -10,10 +10,10 @@ DB_PASSWORD=<your-db-password>
 
 ## Development
 ```bash
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose -f docker-compose.dev.yml up -d --build
 ```
 
 # Production
 ```bash
-docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.yml up -d --build
 ```
