@@ -7,6 +7,8 @@ services:
       dockerfile: ./Dockerfile
     image: lassi/ecommerce-api
     container_name: ecommerce-api
+    environment:
+      - RAILS_ENV=production
     command: bash -c "rm -f tmp/pids/server.pid && rails db:migrate && rails db:all_seed && bundle exec rails s -p 7000 -b '0.0.0.0'"
     restart: unless-stopped
     # env_file: .env
