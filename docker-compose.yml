@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   api:
-    build: 
+    build:
       context: ../ecommerce-api
       # target: production
       dockerfile: ./Dockerfile
@@ -9,6 +9,9 @@ services:
     container_name: ecommerce-api
     environment:
       - RAILS_ENV=production
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_NAME=db
     command: bash -c "rm -f tmp/pids/server.pid && rails db:migrate && rails db:all_seed && bundle exec rails s -p 7000 -b '0.0.0.0'"
     restart: unless-stopped
     # env_file: .env
@@ -20,19 +23,25 @@ services:
       - "127.0.0.1:7000:7000"
 
   web-app:
-    build: 
-        context: ../ecommerce-web-app
-        args:
-          - STRIPE_PUB_KEY=$STRIPE_PUB_KEY
+    build:
+      context: ../ecommerce-web-app
+      args:
+        - STRIPE_PUB_KEY=$STRIPE_PUB_KEY
     image: lassi/ecommerce-web-app
     container_name: ecommerce-web-app
     environment:
       - SERVER_API_URL=ecommerce-api
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_HOST=db
     env_file: .env
     ports:
       - "127.0.0.1:4000:80"
+    links:
+      - db
     depends_on:
       - api
+      - db
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.amnazom-web-app.rule=Host(`amnazom.davegabe.it`)"
@@ -40,5 +49,26 @@ services:
       - "traefik.http.routers.amnazom-web-app.tls.certResolver=le"
       - "traefik.http.services.amnazom-web-app.loadBalancer.server.port=80"
 
-volumes:
-  db-data:
+  db:
+    container_name: ecommerce-db-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    image: mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD
+      - MYSQL_DATABASE=ecommerce_production
+    ports:
+      - "3306:3306"
+
+  adminer:
+    container_name: ecommerce-adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.amnazom-web-app.rule=Host(`amnazom.davegabe.it`)"
+      - "traefik.http.routers.amnazom-web-app.entrypoints=websecure"
+      - "traefik.http.routers.amnazom-web-app.tls.certResolver=le"
+      - "traefik.http.services.amnazom-web-app.loadBalancer.server.port=8080"
