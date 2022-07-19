@@ -57,6 +57,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD
       - MYSQL_DATABASE=ecommerce_production
+    volumes:
+      - ecommerce-app-db:/var/lib/mysql
     ports:
       - "3306:3306"
 
@@ -72,3 +74,5 @@ services:
       - "traefik.http.routers.amnazom-adminer.entrypoints=websecure"
       - "traefik.http.routers.amnazom-adminer.tls.certResolver=le"
       - "traefik.http.services.amnazom-adminer.loadBalancer.server.port=8080"
+volumes:
+  ecommerce-app-db:
