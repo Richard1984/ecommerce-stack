@@ -19,6 +19,9 @@ services:
       - type: bind
         source: ./master.key
         target: /usr/src/app/config/master.key
+      - type: volume
+        source: ecommerce-app-storage
+        target: /usr/src/app/storage
     ports:
       - "127.0.0.1:7000:7000"
 
@@ -76,3 +79,4 @@ services:
       - "traefik.http.services.amnazom-adminer.loadBalancer.server.port=8080"
 volumes:
   ecommerce-app-db:
+  ecommerce-app-storage:
